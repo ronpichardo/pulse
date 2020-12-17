@@ -1,6 +1,13 @@
 import requests
 from bs4 import BeautifulSoup as soup
-import json
+import json, os
+
+drivers_path = os.path.join(os.getcwd() + '/chromedriverpath/chromedriver_win32/chromedriver.exe')
+
+print(drivers_path)
+import sys
+
+sys.exit()
 
 def search_product():
 
