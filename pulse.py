@@ -1,24 +1,33 @@
 import requests
 from bs4 import BeautifulSoup as soup
-import json, os
+import json, os, sys, time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
-drivers_path = os.path.join(os.getcwd() + '/chromedriverpath/chromedriver_win32/chromedriver.exe')
+import webbrowser
 
-print(drivers_path)
-import sys
+if os.name == 'nt':
+  driver_path = os.path.join(os.getcwd() + '/chromedriverpath/chromedriver_win32/chromedriver.exe')
+elif os.name == 'darwin':
+  driver_path = os.path.join(os.getcwd() + '/chromedriverpath/chromedriver_mac64/chromedriver')
 
-sys.exit()
+chrome_options = Options()
+driver = webdriver.Chrome(options=chrome_options, executable_path=(driver_path))
 
 def search_product():
 
   main_url = 'https://hasbropulse.com/collections/new/products.json'
+
   r = requests.get(main_url)
 
   products = r.json()['products']
   
   for product in products:
     # print(product['title'])
-    if c['keywords'] in product['title']:
+    if c['keyword'] in product['title']:
       print('Product found!!')
       # print(product['title'])
 
@@ -28,7 +37,7 @@ def search_product():
 
 def main():
 
-  print('Searching for ' + c['keywords'])
+  print('Searching for ' + c['keyword'])
 
   variant_id = search_product()
 
@@ -42,6 +51,12 @@ def main():
     print('Carting was unsuccessful, or product no longer available')
   else:
     print('Checkout link: ' + r.url)
+    webbrowser.open_new(r.url)
+
+    driver.get(r.url)
+
+    # wait = WebDriverWait(driver, 10)
+    # wait.until(EC.presence_of_element_located((By.XPATH, "//*[@class='btn btn-lg btn-block btn-primary']")))
 
 if __name__ == '__main__':
 
